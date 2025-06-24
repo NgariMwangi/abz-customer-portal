@@ -3,7 +3,7 @@ services:
     web:
         build: .
         # env_file: .env
-        container_name: abz-sales-portal
+        container_name: abz-customer-portal
         restart: always
         ports:
             - 5034:80

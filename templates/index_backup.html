@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block title %}ABZ Hardware - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-white py-5 mb-5" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.92), rgba(245, 158, 11, 0.92)), url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover; border-radius: 24px; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.18);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 animate__animated animate__fadeInLeft">
+                <h1 class="display-2 fw-bold mb-4" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.25);">
+                    <span style="background: linear-gradient(90deg, #fff, #ffe082); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ABZ Hardware</span><br>
+                    <span style="font-size: 2rem; font-weight: 400;">Your Project, Our Tools</span>
+                </h1>
+                <p class="lead mb-4" style="font-size: 1.3rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.18);">
+                    Discover a world of quality hardware, tools, and building supplies. Shop the best brands, get expert advice, and enjoy fast, reliable service.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('products') }}" class="btn btn-light btn-lg px-4 py-3 shadow-lg" style="border-radius: 18px; font-weight: 700;">
+                        <i class="fas fa-shopping-bag me-2"></i>Shop Now
+                    </a>
+                    <a href="#categories" class="btn btn-outline-light btn-lg px-4 py-3" style="border-radius: 18px; font-weight: 700; border-width: 2px;">
+                        <i class="fas fa-th-large me-2"></i>Browse Categories
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center animate__animated animate__fadeInRight">
+                <div class="hero-icon" style="font-size: 11rem; opacity: 0.85; animation: float 6s ease-in-out infinite;">
+                    <i class="fas fa-tools"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="row mb-5 g-4">
+    <div class="col-md-3 text-center">
+        <div class="stat-card p-4 animate__animated animate__fadeInUp" style="background: linear-gradient(135deg, #fff, #e0e7ff); border-radius: 18px; box-shadow: 0 4px 15px rgba(37,99,235,0.08);">
+            <i class="fas fa-boxes mb-3" style="font-size: 2.5rem; color: var(--primary-color);"></i>
+            <h3 class="fw-bold mb-2">1000+</h3>
+            <p class="text-muted mb-0">Products</p>
+        </div>
+    </div>
+    <div class="col-md-3 text-center">
+        <div class="stat-card p-4 animate__animated animate__fadeInUp" style="background: linear-gradient(135deg, #fff, #f0fdf4); border-radius: 18px; box-shadow: 0 4px 15px rgba(16,185,129,0.08);">
+            <i class="fas fa-users mb-3" style="font-size: 2.5rem; color: var(--success-color);"></i>
+            <h3 class="fw-bold mb-2">5000+</h3>
+            <p class="text-muted mb-0">Happy Customers</p>
+        </div>
+    </div>
+    <div class="col-md-3 text-center">
+        <div class="stat-card p-4 animate__animated animate__fadeInUp" style="background: linear-gradient(135deg, #fff, #fef9c3); border-radius: 18px; box-shadow: 0 4px 15px rgba(245,158,11,0.08);">
+            <i class="fas fa-shipping-fast mb-3" style="font-size: 2.5rem; color: var(--accent-color);"></i>
+            <h3 class="fw-bold mb-2">24/7</h3>
+            <p class="text-muted mb-0">Support</p>
+        </div>
+    </div>
+    <div class="col-md-3 text-center">
+        <div class="stat-card p-4 animate__animated animate__fadeInUp" style="background: linear-gradient(135deg, #fff, #fee2e2); border-radius: 18px; box-shadow: 0 4px 15px rgba(239,68,68,0.08);">
+            <i class="fas fa-award mb-3" style="font-size: 2.5rem; color: var(--danger-color);"></i>
+            <h3 class="fw-bold mb-2">10+</h3>
+            <p class="text-muted mb-0">Years Experience</p>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Section -->
+{% if categories %}
+<div id="categories" class="mb-5">
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold mb-3" style="background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Shop by Category</h2>
+        <p class="lead text-muted">Explore our wide range of hardware categories</p>
+    </div>
+    <div class="row g-4">
+        {% for category in categories %}
+        <div class="col-md-4 col-lg-3">
+            <div class="category-card h-100 text-center animate__animated animate__zoomIn" style="background: linear-gradient(135deg, #fff, #e0e7ff); border-radius: 20px; padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: all 0.3s ease; border: 2px solid transparent;">
+                <div class="category-icon mb-4" style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-box" style="font-size: 2rem; color: white;"></i>
+                </div>
+                <h5 class="fw-bold mb-3">{{ category.name }}</h5>
+                {% if category.description %}
+                <p class="text-muted mb-4">{{ category.description }}</p>
+                {% endif %}
+                <a href="{{ url_for('products', category=category.id) }}" class="btn btn-primary" style="border-radius: 25px; padding: 0.75rem 2rem;">
+                    <i class="fas fa-arrow-right me-2"></i>Browse Products
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Featured Products Section -->
+{% if products %}
+<div class="mb-5">
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold mb-3" style="background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Featured Products</h2>
+        <p class="lead text-muted">Handpicked products for your projects</p>
+    </div>
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-md-6 col-lg-3">
+            <div class="product-card h-100 animate__animated animate__fadeInUp">
+                <div class="product-image-container position-relative overflow-hidden" style="border-radius: 16px 16px 0 0; height: 200px;">
+                    {% if product.image_url %}
+                    <img src="{{ product.image_url }}" class="product-image" alt="{{ product.name }}">
+                    {% else %}
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="fas fa-image text-muted" style="font-size: 3rem;"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Product Badge -->
+                    <div class="product-badge position-absolute top-0 start-0 m-2">
+                        <span class="badge bg-success" style="border-radius: 12px; padding: 0.5rem 0.75rem;">
+                            <i class="fas fa-star me-1"></i>Featured
+                        </span>
+                    </div>
+                    
+                    <!-- Quick Add Button -->
+                    <div class="quick-add-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(37, 99, 235, 0.9); opacity: 0; transition: all 0.3s ease;">
+                        <button class="btn btn-light btn-sm" onclick="addToCart({{ product.id }})" style="border-radius: 20px; padding: 0.5rem 1rem;">
+                            <i class="fas fa-cart-plus me-1"></i>Quick Add
+                        </button>
+                    </div>
+                    
+                    <!-- View Details Overlay -->
+                    <div class="view-details-overlay position-absolute bottom-0 start-0 w-100 p-3" style="background: linear-gradient(transparent, rgba(0,0,0,0.7)); opacity: 0; transition: all 0.3s ease;">
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-outline-light btn-sm w-100" style="border-radius: 20px;">
+                            <i class="fas fa-eye me-1"></i>View Details
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card-body d-flex flex-column p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title fw-bold mb-0 text-truncate" style="max-width: 70%;">{{ product.name }}</h6>
+                        {% if product.stock and product.stock > 0 %}
+                        <span class="badge bg-success" style="font-size: 0.7rem; border-radius: 10px;">
+                            <i class="fas fa-check me-1"></i>In Stock
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <p class="card-text text-muted mb-3">
+                        {% if product.category %}
+                        <span class="badge bg-primary" style="border-radius: 12px; padding: 0.4rem 0.8rem; font-size: 0.75rem;">{{ product.category.name }}</span>
+                        {% endif %}
+                    </p>
+                    
+                    <div class="price mb-3">
+                        {% if product.sellingprice %}
+                        <span class="fw-bold" style="font-size: 1.1rem; color: var(--danger-color);">Ksh {{ "%.2f"|format(product.sellingprice) }}</span>
+                        {% else %}
+                        <span class="text-muted">Price not available</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mt-auto d-flex gap-2">
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-outline-primary flex-fill" style="border-radius: 20px; padding: 0.5rem; font-size: 0.9rem;">
+                            <i class="fas fa-eye me-1"></i>View
+                        </a>
+                        {% if product.sellingprice %}
+                        <button class="btn btn-primary flex-fill" onclick="addToCart({{ product.id }})" style="border-radius: 20px; padding: 0.5rem; font-size: 0.9rem;">
+                            <i class="fas fa-cart-plus me-1"></i>Add
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-5">
+        <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg px-5 py-3" style="border-radius: 30px; font-weight: 600;">
+            <i class="fas fa-shopping-bag me-2"></i>View All Products
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<!-- Features Section -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="feature-card text-center p-4 animate__animated animate__fadeInUp" style="background: linear-gradient(135deg, #f0fdf4, #fff); border-radius: 20px; box-shadow: 0 4px 15px rgba(16,185,129,0.08); height: 100%;">
+            <div class="feature-icon mb-4" style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, var(--success-color), #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-shipping-fast" style="font-size: 2rem; color: white;"></i>
+            </div>
+            <h4 class="fw-bold mb-3">Fast Delivery</h4>
+            <p class="text-muted">Quick and reliable delivery to your doorstep with real-time tracking</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-card text-center p-4 animate__animated animate__fadeInUp" style="background: linear-gradient(135deg, #fef9c3, #fff); border-radius: 20px; box-shadow: 0 4px 15px rgba(245,158,11,0.08); height: 100%;">
+            <div class="feature-icon mb-4" style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, var(--warning-color), #d97706); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-shield-alt" style="font-size: 2rem; color: white;"></i>
+            </div>
+            <h4 class="fw-bold mb-3">Quality Guarantee</h4>
+            <p class="text-muted">All products come with quality assurance and warranty protection</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-card text-center p-4 animate__animated animate__fadeInUp" style="background: linear-gradient(135deg, #e0e7ff, #fff); border-radius: 20px; box-shadow: 0 4px 15px rgba(37,99,235,0.08); height: 100%;">
+            <div class="feature-icon mb-4" style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, var(--info-color), #2563eb); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-headset" style="font-size: 2rem; color: white;"></i>
+            </div>
+            <h4 class="fw-bold mb-3">24/7 Support</h4>
+            <p class="text-muted">Expert customer support available round the clock for all your needs</p>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.category-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.product-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    border-color: var(--primary-color);
+}
+
+.product-card:hover .quick-add-overlay {
+    opacity: 1;
+}
+
+.product-card:hover .view-details-overlay {
+    opacity: 1;
+}
+
+.product-image {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+    transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.1);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><defs><pattern id=\"grain\" width=\"100\" height=\"100\" patternUnits=\"userSpaceOnUse\"><circle cx=\"50\" cy=\"50\" r=\"1\" fill=\"white\" opacity=\"0.1\"/></pattern></defs><rect width=\"100\" height=\"100\" fill=\"url(%23grain)\"/></svg>');
+    pointer-events: none;
+}
+</style>
+{% endblock %}

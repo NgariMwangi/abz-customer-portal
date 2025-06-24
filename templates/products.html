@@ -1,0 +1,743 @@
+{% extends "base.html" %}
+
+{% block title %}ABZ Hardware - Products{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="products-hero mb-5">
+    <div class="hero-content text-center">
+        <h1 class="hero-title mb-3">
+            <i class="fas fa-tools me-3"></i>Our Products
+        </h1>
+        <p class="hero-subtitle mb-4">
+            Discover quality hardware, tools, and building materials for all your projects
+        </p>
+        
+        <!-- Responsive Search Bar -->
+        <div class="search-container mb-4">
+            <form method="GET" class="search-form">
+                <!-- Desktop Search -->
+                <div class="input-group search-input-group desktop-search">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" name="search" class="form-control border-start-0" 
+                           placeholder="Search for products..." value="{{ search }}">
+                    <select name="category" class="form-select border-start-0" style="max-width: 200px;">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category_id|int == category.id %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </div>
+                
+                <!-- Mobile Search -->
+                <div class="mobile-search">
+                    <div class="search-row mb-2">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" name="search" class="form-control" 
+                                   placeholder="Search for products..." value="{{ search }}">
+                        </div>
+                    </div>
+                    <div class="search-row mb-2">
+                        <select name="category" class="form-select">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}" {% if category_id|int == category.id %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="search-row">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-2"></i>Search Products
+                        </button>
+                    </div>
+                </div>
+            </form>
+            
+            {% if search or category_id %}
+            <div class="mt-3">
+                <a href="{{ url_for('products') }}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-times me-1"></i>Clear Filters
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Results Summary -->
+        {% if products.total %}
+        <div class="results-summary">
+            <span class="badge bg-light text-dark">
+                <i class="fas fa-box me-1"></i>
+                {{ products.items|length }} of {{ products.total }} products
+            </span>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Category Filter Pills -->
+{% if categories %}
+<div class="category-filters mb-4">
+    <div class="container">
+        <div class="category-scroll">
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('products') }}" 
+                   class="category-pill {% if not category_id %}active{% endif %}">
+                    <i class="fas fa-th-large me-2"></i>All Products
+                </a>
+                {% for category in categories %}
+                <a href="{{ url_for('products', category=category.id, search=search) }}" 
+                   class="category-pill {% if category_id|int == category.id %}active{% endif %}">
+                    <i class="fas fa-tag me-2"></i>{{ category.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Products Grid -->
+{% if products.items %}
+<div class="products-grid">
+    <div class="container">
+        <div class="row g-4">
+            {% for product in products.items %}
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="product-card-modern">
+                    <!-- Product Image -->
+                    <div class="product-image-container">
+                        {% if product.image_url %}
+                        <img src="{{ product.image_url }}" class="product-image" alt="{{ product.name }}">
+                        {% else %}
+                        <div class="product-image-placeholder">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Quick Actions Overlay -->
+                        <div class="product-overlay">
+                            <div class="overlay-actions">
+                                <a href="{{ url_for('product_detail', product_id=product.id) }}" 
+                                   class="overlay-btn view-btn" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                {% if product.sellingprice %}
+                                <button class="overlay-btn cart-btn" onclick="addToCart({{ product.id }})" 
+                                        title="Add to Cart">
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Category Badge -->
+                        {% if product.category %}
+                        <div class="category-badge">
+                            {{ product.category.name }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Product Info -->
+                    <div class="product-info">
+                        <h5 class="product-title">{{ product.name }}</h5>
+                        
+                        <div class="product-price">
+                            {% if product.sellingprice %}
+                            <span class="price-amount">Ksh {{ "%.2f"|format(product.sellingprice) }}</span>
+                            {% else %}
+                            <span class="price-unavailable">Price not available</span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Stock Status -->
+                        <div class="stock-status">
+                            {% if product.stock and product.stock > 0 %}
+                            <span class="stock-available">
+                                <i class="fas fa-check-circle me-1"></i>In Stock
+                            </span>
+                            {% else %}
+                            <span class="stock-unavailable">
+                                <i class="fas fa-times-circle me-1"></i>Out of Stock
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="product-actions">
+                            <a href="{{ url_for('product_detail', product_id=product.id) }}" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>View Details
+                            </a>
+                            {% if product.sellingprice %}
+                            <button class="btn btn-primary btn-sm" onclick="addToCart({{ product.id }})">
+                                <i class="fas fa-cart-plus me-1"></i>Add to Cart
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Pagination -->
+{% if products.pages > 1 %}
+<div class="pagination-section mt-5">
+    <div class="container">
+        <nav aria-label="Products pagination">
+            <ul class="pagination justify-content-center">
+                {% if products.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('products', page=products.prev_num, search=search, category=category_id) }}">
+                        <i class="fas fa-chevron-left me-1"></i>Previous
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for page_num in products.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+                    {% if page_num %}
+                        {% if page_num != products.page %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('products', page=page_num, search=search, category=category_id) }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                        {% endif %}
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if products.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('products', page=products.next_num, search=search, category=category_id) }}">
+                        Next <i class="fas fa-chevron-right ms-1"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<!-- No Products Found -->
+<div class="no-products-section">
+    <div class="container">
+        <div class="text-center py-5">
+            <div class="no-products-icon mb-4">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3 class="no-products-title">No products found</h3>
+            <p class="no-products-text">
+                {% if search or category_id %}
+                Try adjusting your search criteria or browse all products.
+                {% else %}
+                No products are currently available.
+                {% endif %}
+            </p>
+            {% if search or category_id %}
+            <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-list me-2"></i>View All Products
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<style>
+/* Products Page Specific Styles */
+.products-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 80px 0 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.products-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.9);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Desktop Search Styles */
+.desktop-search {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-radius: 50px;
+    overflow: hidden;
+}
+
+.desktop-search .form-control,
+.desktop-search .form-select {
+    border: none;
+    padding: 15px 20px;
+    font-size: 1rem;
+}
+
+.desktop-search .btn {
+    border-radius: 0 50px 50px 0;
+    padding: 15px 30px;
+    font-weight: 600;
+}
+
+/* Mobile Search Styles */
+.mobile-search {
+    display: none;
+}
+
+.mobile-search .input-group {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.mobile-search .form-control,
+.mobile-search .form-select {
+    border: none;
+    padding: 12px 15px;
+    font-size: 0.9rem;
+}
+
+.mobile-search .btn {
+    border-radius: 15px;
+    padding: 12px 20px;
+    font-weight: 600;
+}
+
+.results-summary {
+    margin-top: 20px;
+}
+
+.category-filters {
+    padding: 20px 0;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+}
+
+.category-scroll {
+    overflow-x: auto;
+    padding: 0 15px;
+}
+
+.category-scroll::-webkit-scrollbar {
+    height: 4px;
+}
+
+.category-scroll::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+}
+
+.category-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 2px;
+}
+
+.category-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(255,255,255,0.9);
+    color: #666;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.category-pill:hover {
+    background: white;
+    color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.category-pill.active {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.products-grid {
+    padding: 40px 0;
+}
+
+.product-card-modern {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    position: relative;
+}
+
+.product-card-modern:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.product-image-container {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.product-card-modern:hover .product-image {
+    transform: scale(1.1);
+}
+
+.product-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #cbd5e1;
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card-modern:hover .product-overlay {
+    opacity: 1;
+}
+
+.overlay-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.overlay-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.view-btn {
+    background: #3b82f6;
+    color: white;
+}
+
+.view-btn:hover {
+    background: #2563eb;
+    transform: scale(1.1);
+}
+
+.cart-btn {
+    background: #10b981;
+    color: white;
+}
+
+.cart-btn:hover {
+    background: #059669;
+    transform: scale(1.1);
+}
+
+.category-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(59, 130, 246, 0.9);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+.product-info {
+    padding: 25px;
+}
+
+.product-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #1e293b;
+    line-height: 1.4;
+}
+
+.product-price {
+    margin-bottom: 15px;
+}
+
+.price-amount {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #dc2626;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.price-unavailable {
+    color: #94a3b8;
+    font-style: italic;
+}
+
+.stock-status {
+    margin-bottom: 20px;
+}
+
+.stock-available {
+    color: #059669;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.stock-unavailable {
+    color: #dc2626;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.product-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.product-actions .btn {
+    flex: 1;
+    min-width: 120px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.product-actions .btn:hover {
+    transform: translateY(-2px);
+}
+
+.pagination-section {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    padding: 30px 0;
+    border-radius: 20px;
+}
+
+.pagination .page-link {
+    border: none;
+    padding: 12px 18px;
+    margin: 0 5px;
+    border-radius: 10px;
+    color: #64748b;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background: #3b82f6;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.no-products-section {
+    padding: 80px 0;
+}
+
+.no-products-icon {
+    font-size: 5rem;
+    color: #cbd5e1;
+    margin-bottom: 20px;
+}
+
+.no-products-title {
+    color: #64748b;
+    margin-bottom: 15px;
+}
+
+.no-products-text {
+    color: #94a3b8;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .search-container {
+        max-width: 100%;
+        padding: 0 15px;
+    }
+    
+    .desktop-search {
+        display: none;
+    }
+    
+    .mobile-search {
+        display: block;
+    }
+    
+    .category-filters {
+        padding: 15px 0;
+    }
+    
+    .product-actions {
+        flex-direction: column;
+    }
+    
+    .product-actions .btn {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    
+    .product-info {
+        padding: 20px;
+    }
+    
+    .product-title {
+        font-size: 1rem;
+    }
+    
+    .price-amount {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .search-container {
+        padding: 0 10px;
+    }
+    
+    .mobile-search .form-control,
+    .mobile-search .form-select,
+    .mobile-search .btn {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .category-scroll {
+        padding: 0 10px;
+    }
+    
+    .category-pill {
+        font-size: 0.8rem;
+        padding: 8px 12px;
+    }
+    
+    .product-card-modern {
+        margin-bottom: 20px;
+    }
+    
+    .product-image-container {
+        height: 200px;
+    }
+    
+    .product-info {
+        padding: 15px;
+    }
+    
+    .pagination .page-link {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        margin: 0 2px;
+    }
+}
+</style>
+{% endblock %}
+ 

@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}ABZ Hardware - Premium Tools & Equipment{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-6" style="background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%); padding: 100px 0;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <div class="badge mb-4" style="background: linear-gradient(45deg, #ffd700, #ffed4e); color: #1a1a1a; padding: 0.75rem 1.5rem; border-radius: 25px; font-weight: 600; font-size: 0.9rem;">
+                        <i class="fas fa-star me-2"></i>Premium Hardware Store
+                    </div>
+                    <h1 class="display-4 fw-bold mb-3" style="color: #1a1a1a;"><span style="color: #ffd700;">ABZ</span> Hardware Solutions</h1>
+                    <p class="lead mb-4" style="font-size: 1.25rem; color: #495057;">Your trusted partner for quality tools, materials, and equipment.</p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{{ url_for('products') }}" class="btn btn-lg px-5 py-3 fw-bold" style="background: linear-gradient(45deg, #ffd700, #ffed4e); color: #1a1a1a;">Shop Products</a>
+                        <a href="#categories" class="btn btn-outline-dark btn-lg px-5 py-3 fw-bold">Browse Categories</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center mt-4 mt-lg-0">
+                <img src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?auto=format&fit=crop&w=1200&h=600&q=80" alt="Professional Tools" class="img-fluid rounded-3 shadow" style="max-height: 400px; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Key Features -->
+<section class="py-5" style="background: #f8f9fa;">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm">
+                    <i class="fas fa-shipping-fast fa-2x mb-3 text-warning"></i>
+                    <h5 class="fw-bold">Fast Delivery</h5>
+                    <p class="text-muted">Next-day delivery with real-time tracking.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm">
+                    <i class="fas fa-shield-alt fa-2x mb-3 text-warning"></i>
+                    <h5 class="fw-bold">Quality Guarantee</h5>
+                    <p class="text-muted">Comprehensive product warranty protection.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm">
+                    <i class="fas fa-headset fa-2x mb-3 text-warning"></i>
+                    <h5 class="fw-bold">Expert Support</h5>
+                    <p class="text-muted">Professional advice from industry experts.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories -->
+{% if categories %}
+<section id="categories" class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Product Categories</h2>
+            <p class="text-muted">Explore our comprehensive hardware categories</p>
+        </div>
+        <div class="row g-4">
+            {% for category in categories %}
+            <div class="col-md-4">
+                <div class="p-4 bg-white border-start border-warning border-4 rounded shadow-sm h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-box text-warning fa-lg me-2"></i>
+                        <h5 class="fw-bold mb-0">{{ category.name }}</h5>
+                    </div>
+                    {% if category.description %}
+                    <p class="text-muted">{{ category.description }}</p>
+                    {% endif %}
+                    <a href="{{ url_for('products', category=category.id) }}" class="btn btn-sm btn-outline-dark w-100">Browse Products</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Why Choose Us -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4">Why Choose ABZ Hardware?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded shadow-sm">
+                    <i class="fas fa-certificate fa-2x text-warning mb-3"></i>
+                    <h6 class="fw-bold">Trusted by Professionals</h6>
+                    <p class="text-muted">We supply top contractors and builders across Kenya.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded shadow-sm">
+                    <i class="fas fa-thumbs-up fa-2x text-warning mb-3"></i>
+                    <h6 class="fw-bold">5-Star Ratings</h6>
+                    <p class="text-muted">Thousands of satisfied clients and growing daily.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded shadow-sm">
+                    <i class="fas fa-leaf fa-2x text-warning mb-3"></i>
+                    <h6 class="fw-bold">Eco-Friendly Products</h6>
+                    <p class="text-muted">Sustainably sourced tools and materials.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+{% if products %}
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Featured Products</h2>
+            <p class="text-muted">Premium tools selected by our experts</p>
+        </div>
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-md-6 col-lg-3">
+                <div class="product-card h-100 position-relative" style="background: white; border-radius: 10px; box-shadow: 0 3px 15px rgba(0,0,0,0.04); font-size: 0.9rem;">
+                    <div class="product-image-container overflow-hidden" style="height: 160px; background: #f8f9fa; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                        {% if product.image_url %}
+                        <img src="{{ product.image_url }}" class="w-100 h-100" style="object-fit: cover;">
+                        {% else %}
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="product-info p-3">
+                        <h6 class="fw-bold mb-1">{{ product.name }}</h6>
+                        {% if product.category %}
+                        <span class="badge bg-light text-dark mb-2">{{ product.category.name }}</span>
+                        {% endif %}
+                        {% if product.stock and product.stock > 0 %}
+                        <div class="text-success mb-1" style="font-size: 0.75rem;"><i class="fas fa-check me-1"></i>In Stock</div>
+                        {% endif %}
+                        {% if product.sellingprice %}
+                        <div class="fw-bold text-dark mb-2">Ksh {{ "%.2f"|format(product.sellingprice) }}</div>
+                        {% else %}
+                        <div class="text-muted mb-2">Price not available</div>
+                        {% endif %}
+                        <div class="d-flex gap-1">
+                            <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-sm btn-outline-secondary flex-fill">Details</a>
+                            {% if product.sellingprice %}
+                            <button class="btn btn-sm btn-warning flex-fill" onclick="addToCart({{ product.id }})"><i class="fas fa-cart-plus me-1"></i>Add</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{{ url_for('products') }}" class="btn btn-lg btn-warning px-5 py-3 fw-bold">View All Products</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="py-5" style="background: linear-gradient(to right, #1a1a1a, #2d2d2d);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 text-white">
+                <h2 class="fw-bold mb-3">Get Professional Tools</h2>
+                <p class="lead text-light">Sign up for exclusive access to premium tools and offers.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ url_for('register') }}" class="btn btn-lg btn-warning px-5 fw-bold">Create Account</a>
+                    <a href="{{ url_for('products') }}" class="btn btn-lg btn-outline-light px-5 fw-bold">Browse Products</a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                <i class="fas fa-tools fa-4x text-warning"></i>
+            </div>
+        </div>
+    </div>
+</section>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+{% endblock %}

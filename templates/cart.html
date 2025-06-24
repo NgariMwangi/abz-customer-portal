@@ -1,0 +1,614 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart - ABZ Hardware{% endblock %}
+
+{% block content %}
+<!-- Cart Header -->
+<div class="cart-header">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="cart-title-section">
+                <h1 class="cart-title">
+                    <i class="fas fa-shopping-cart me-2"></i>Shopping Cart
+                </h1>
+                <p class="cart-subtitle">Review your items and proceed to checkout</p>
+            </div>
+            <a href="{{ url_for('products') }}" class="btn btn-outline-primary continue-shopping-btn">
+                <i class="fas fa-arrow-left me-2"></i>
+                <span class="btn-text">Continue Shopping</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if cart_items %}
+<div class="container">
+    <!-- Mobile Order Summary (Sticky) -->
+    <div class="mobile-order-summary d-lg-none">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">Total ({{ cart_items|length }} items)</h6>
+                        <span class="fw-bold fs-5 text-danger">Ksh {{ "%.2f"|format(total) }}</span>
+                    </div>
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('checkout') }}" class="btn btn-primary">
+                        <i class="fas fa-credit-card me-2"></i>Checkout
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Cart Items Section -->
+        <div class="col-lg-8">
+            <div class="cart-items-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-box me-2"></i>Cart Items ({{ cart_items|length }})
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Desktop Cart Items -->
+                        <div class="desktop-cart-items d-none d-lg-block">
+                            <div class="cart-items-table">
+                                <div class="cart-item-header row py-2 border-bottom">
+                                    <div class="col-md-4"><strong>Product</strong></div>
+                                    <div class="col-md-2 text-center"><strong>Price</strong></div>
+                                    <div class="col-md-2 text-center"><strong>Quantity</strong></div>
+                                    <div class="col-md-2 text-center"><strong>Total</strong></div>
+                                    <div class="col-md-2 text-center"><strong>Actions</strong></div>
+                                </div>
+                                
+                                {% for item in cart_items %}
+                                <div class="cart-item-row row align-items-center py-3 border-bottom">
+                                    <div class="col-md-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="product-image-container me-3">
+                                                {% if item.product.image_url %}
+                                                <img src="{{ item.product.image_url }}" class="product-image" alt="{{ item.product.name }}">
+                                                {% else %}
+                                                <div class="product-image-placeholder">
+                                                    <i class="fas fa-image"></i>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="product-details">
+                                                <h6 class="product-name mb-1">{{ item.product.name }}</h6>
+                                                {% if item.product.category %}
+                                                <small class="text-muted">{{ item.product.category.name }}</small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-2 text-center">
+                                        <span class="product-price">Ksh {{ "%.2f"|format(item.product.sellingprice) }}</span>
+                                    </div>
+                                    
+                                    <div class="col-md-2 text-center">
+                                        <form method="POST" action="{{ url_for('update_cart') }}" class="quantity-form">
+                                            <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                                            <div class="quantity-controls">
+                                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" 
+                                                       max="{{ item.product.stock or 999 }}" class="form-control quantity-input" 
+                                                       onchange="this.form.submit()">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    <div class="col-md-2 text-center">
+                                        <span class="item-total fw-bold">Ksh {{ "%.2f"|format(item.total) }}</span>
+                                    </div>
+                                    
+                                    <div class="col-md-2 text-center">
+                                        <form method="POST" action="{{ url_for('update_cart') }}" class="d-inline">
+                                            <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                                            <input type="hidden" name="quantity" value="0">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Remove item">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Mobile Cart Items -->
+                        <div class="mobile-cart-items d-lg-none">
+                            {% for item in cart_items %}
+                            <div class="mobile-cart-item">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="product-image-container">
+                                            {% if item.product.image_url %}
+                                            <img src="{{ item.product.image_url }}" class="product-image" alt="{{ item.product.name }}">
+                                            {% else %}
+                                            <div class="product-image-placeholder">
+                                                <i class="fas fa-image"></i>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-8">
+                                        <div class="product-info">
+                                            <h6 class="product-name">{{ item.product.name }}</h6>
+                                            {% if item.product.category %}
+                                            <small class="text-muted">{{ item.product.category.name }}</small>
+                                            {% endif %}
+                                            
+                                            <div class="price-section">
+                                                <span class="product-price">Ksh {{ "%.2f"|format(item.product.sellingprice) }}</span>
+                                            </div>
+                                            
+                                            <div class="quantity-section">
+                                                <form method="POST" action="{{ url_for('update_cart') }}" class="quantity-form">
+                                                    <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                                                    <div class="quantity-controls">
+                                                        <label class="quantity-label">Quantity:</label>
+                                                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" 
+                                                               max="{{ item.product.stock or 999 }}" class="form-control quantity-input" 
+                                                               onchange="this.form.submit()">
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            
+                                            <div class="item-actions">
+                                                <span class="item-total">Ksh {{ "%.2f"|format(item.total) }}</span>
+                                                <form method="POST" action="{{ url_for('update_cart') }}" class="d-inline">
+                                                    <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                                                    <input type="hidden" name="quantity" value="0">
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm remove-btn" title="Remove">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Desktop Order Summary -->
+        <div class="col-lg-4 d-none d-lg-block">
+            <div class="order-summary-section">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-receipt me-2"></i>Order Summary
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="summary-item d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span>Ksh {{ "%.2f"|format(total) }}</span>
+                        </div>
+                        
+                        <div class="summary-item d-flex justify-content-between mb-2">
+                            <span>Tax:</span>
+                            <span>Ksh 0.00</span>
+                        </div>
+                        
+                        <div class="summary-item d-flex justify-content-between mb-2">
+                            <span>Shipping:</span>
+                            <span>Ksh 0.00</span>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="summary-item d-flex justify-content-between mb-4">
+                            <span class="fw-bold fs-5">Total:</span>
+                            <span class="fw-bold fs-5 text-danger">Ksh {{ "%.2f"|format(total) }}</span>
+                        </div>
+                        
+                        {% if current_user.is_authenticated %}
+                        <div class="d-grid">
+                            <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-lg checkout-btn">
+                                <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
+                            </a>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Please <a href="{{ url_for('login') }}" class="alert-link">sign in</a> to complete your order.
+                        </div>
+                        <div class="d-grid">
+                            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In to Checkout
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- Empty Cart -->
+<div class="empty-cart-section">
+    <div class="container">
+        <div class="text-center py-5">
+            <div class="empty-cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h2 class="empty-cart-title">Your cart is empty</h2>
+            <p class="empty-cart-text">Looks like you haven't added any products to your cart yet.</p>
+            <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-shopping-bag me-2"></i>Start Shopping
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<style>
+/* Cart Page Styles */
+.cart-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 30px 0;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.cart-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.cart-subtitle {
+    color: #6c757d;
+    margin: 5px 0 0 0;
+    font-size: 1.1rem;
+}
+
+.continue-shopping-btn {
+    border-radius: 25px;
+    padding: 12px 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.continue-shopping-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Mobile Order Summary */
+.mobile-order-summary {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin-bottom: 20px;
+}
+
+.mobile-order-summary .card {
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: none;
+}
+
+/* Cart Items Section */
+.cart-items-section .card {
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: none;
+}
+
+.cart-items-section .card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.cart-items-section .card-title {
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+/* Product Image */
+.product-image-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f8f9fa;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #adb5bd;
+    font-size: 1.5rem;
+}
+
+/* Desktop Cart Items */
+.cart-items-table {
+    width: 100%;
+}
+
+.cart-item-header {
+    background: #f8f9fa;
+    border-radius: 10px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.cart-item-row {
+    transition: all 0.3s ease;
+}
+
+.cart-item-row:hover {
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.product-name {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.product-price {
+    font-weight: 600;
+    color: #dc2626;
+    font-size: 1.1rem;
+}
+
+.quantity-input {
+    width: 80px;
+    text-align: center;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.item-total {
+    font-size: 1.2rem;
+    color: #1a1a1a;
+}
+
+/* Mobile Cart Items */
+.mobile-cart-item {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.mobile-cart-item:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.mobile-cart-item .product-image-container {
+    width: 100%;
+    height: 120px;
+}
+
+.mobile-cart-item .product-name {
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+.mobile-cart-item .price-section {
+    margin: 10px 0;
+}
+
+.mobile-cart-item .quantity-section {
+    margin: 15px 0;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #6c757d;
+    margin: 0;
+}
+
+.mobile-cart-item .quantity-input {
+    width: 70px;
+    padding: 8px;
+    font-size: 0.9rem;
+}
+
+.item-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e9ecef;
+}
+
+.mobile-cart-item .item-total {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.remove-btn {
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+/* Order Summary */
+.order-summary-section .card {
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: none;
+}
+
+.order-summary-section .card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.summary-item {
+    font-size: 1rem;
+    color: #495057;
+}
+
+.checkout-btn {
+    border-radius: 12px;
+    padding: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.checkout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Empty Cart */
+.empty-cart-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 20px;
+    margin: 40px 0;
+}
+
+.empty-cart-icon {
+    font-size: 5rem;
+    color: #adb5bd;
+    margin-bottom: 20px;
+}
+
+.empty-cart-title {
+    color: #495057;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.empty-cart-text {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .cart-header {
+        padding: 20px 0;
+        margin-bottom: 20px;
+    }
+    
+    .cart-title {
+        font-size: 1.75rem;
+    }
+    
+    .cart-subtitle {
+        font-size: 1rem;
+    }
+    
+    .continue-shopping-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-text {
+        display: none;
+    }
+    
+    .mobile-cart-item {
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+    
+    .mobile-cart-item .product-image-container {
+        height: 100px;
+    }
+    
+    .mobile-cart-item .product-name {
+        font-size: 0.95rem;
+    }
+    
+    .mobile-cart-item .quantity-input {
+        width: 60px;
+        padding: 6px;
+        font-size: 0.85rem;
+    }
+    
+    .empty-cart-icon {
+        font-size: 4rem;
+    }
+    
+    .empty-cart-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .cart-title {
+        font-size: 1.5rem;
+    }
+    
+    .mobile-cart-item {
+        padding: 12px;
+    }
+    
+    .mobile-cart-item .product-image-container {
+        height: 80px;
+    }
+    
+    .mobile-cart-item .product-name {
+        font-size: 0.9rem;
+    }
+    
+    .quantity-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .mobile-cart-item .quantity-input {
+        width: 80px;
+    }
+    
+    .item-actions {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .remove-btn {
+        align-self: flex-end;
+    }
+}
+</style>
+{% endblock %} 

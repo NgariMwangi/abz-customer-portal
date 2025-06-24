@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - ABZ Hardware{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-credit-card me-2"></i>Checkout</h1>
+    <a href="{{ url_for('cart') }}" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left me-1"></i>Back to Cart
+    </a>
+</div>
+
+<div class="row">
+    <!-- Order Summary -->
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-4">Order Summary</h5>
+                
+                {% for item in cart_items %}
+                <div class="row align-items-center py-3 border-bottom">
+                    <div class="col-md-2">
+                        {% if item.product.image_url %}
+                        <img src="{{ item.product.image_url }}" class="img-fluid rounded" alt="{{ item.product.name }}">
+                        {% else %}
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 80px;">
+                            <i class="fas fa-image text-muted"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6 class="mb-1">{{ item.product.name }}</h6>
+                        {% if item.product.category %}
+                        <small class="text-muted">{{ item.product.category.name }}</small>
+                        {% endif %}
+                        <br>
+                        <small class="text-muted">Quantity: {{ item.quantity }}</small>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <span class="price">${{ "%.2f"|format(item.product.sellingprice) }}</span>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <span class="fw-bold">${{ "%.2f"|format(item.total) }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Customer Information -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-4">Customer Information</h5>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" value="{{ current_user.firstname }} {{ current_user.lastname }}" readonly>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" value="{{ current_user.email }}" readonly>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Note:</strong> This is a walk-in order. You will need to visit our store to pick up your items and complete payment.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Order Total -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-4">Order Total</h5>
+                
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span>${{ "%.2f"|format(total) }}</span>
+                </div>
+                
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Tax:</span>
+                    <span>$0.00</span>
+                </div>
+                
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Shipping:</span>
+                    <span>$0.00</span>
+                </div>
+                
+                <hr>
+                
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="fw-bold fs-5">Total:</span>
+                    <span class="fw-bold fs-5 text-danger">${{ "%.2f"|format(total) }}</span>
+                </div>
+                
+                <form method="POST">
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-check me-2"></i>Place Order
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Your order will be processed securely and you'll receive a confirmation email.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

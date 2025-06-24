@@ -1,0 +1,9 @@
+version: '3'
+services:
+    web:
+        build: .
+        # env_file: .env
+        container_name: abz-sales-portal
+        restart: always
+        ports:
+            - 5033:80

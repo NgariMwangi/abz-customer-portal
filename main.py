@@ -10,8 +10,8 @@ from datetime import datetime, timedelta
 # Initialize Flask app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yvkjkelcjklcl'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:deno0707@localhost/abz'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:#Deno0707@69.197.187.23:5432/abz'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:deno0707@localhost/abz'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:#Deno0707@69.197.187.23:5432/abz'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Brevo API configuration

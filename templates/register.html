@@ -16,22 +16,28 @@
                 <form method="POST">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="firstname" class="form-label">First Name</label>
+                            <label for="firstname" class="form-label">First Name / Company Name</label>
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="fas fa-user"></i>
                                 </span>
                                 <input type="text" class="form-control" id="firstname" name="firstname" required>
                             </div>
+                            <div class="form-text">
+                                Enter your first name or company name
+                            </div>
                         </div>
                         
                         <div class="col-md-6 mb-3">
-                            <label for="lastname" class="form-label">Last Name</label>
+                            <label for="lastname" class="form-label">Last Name / Company Branch</label>
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="fas fa-user"></i>
                                 </span>
                                 <input type="text" class="form-control" id="lastname" name="lastname" required>
+                            </div>
+                            <div class="form-text">
+                                Enter your last name or company branch/location
                             </div>
                         </div>
                     </div>
@@ -52,7 +58,10 @@
                             <span class="input-group-text">
                                 <i class="fas fa-lock"></i>
                             </span>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <input type="password" class="form-control" id="password" name="password" required minlength="6">
+                        </div>
+                        <div class="form-text">
+                            Password must be at least 6 characters long.
                         </div>
                     </div>
                     

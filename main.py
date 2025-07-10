@@ -15,7 +15,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:#Deno0707@69.197.
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Brevo API configuration
-app.config['BREVO_API_KEY'] = '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'  # Replace with your Brevo API key
+app.config['BREVO_API_KEY'] = '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'  # Replace with your Brevo API key
 app.config['BREVO_SENDER_EMAIL'] = 'admin@abzhardware.co.ke'  # Replace with your sender email
 app.config['BREVO_SENDER_NAME'] = 'ABZ Hardware'  # Replace with your sender name
 

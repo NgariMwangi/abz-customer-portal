@@ -266,7 +266,7 @@ def send_password_reset_email(user, reset_token):
         'content-type': 'application/json',
     }
     
-    reset_url = f"http://localhost:5000/reset-password/{reset_token}"
+    reset_url = f"https://abzhardware.co.ke/reset-password/{reset_token}"
     
     # Debug: Print the request data
     print(f"🔍 Debug: Sending password reset email to {user.email}")

@@ -15,7 +15,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:#Deno0707@69.197.
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Brevo API configuration
-app.config['BREVO_API_KEY'] = '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'  # Replace with your Brevo API key
+app.config['KEYY'] = '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'  # Replace with your Brevo API key
 app.config['BREVO_SENDER_EMAIL'] = 'admin@abzhardware.co.ke'  # Replace with your sender email
 app.config['BREVO_SENDER_NAME'] = 'ABZ Hardware'  # Replace with your sender name
 
@@ -30,7 +30,7 @@ from models import Branch, Category, User, Product, OrderType, Order, OrderItem,
 
 def send_welcome_email(user):
     """Send welcome email to newly registered user using Brevo API"""
-    api_key = app.config['BREVO_API_KEY']
+    api_key = app.config['KEYY']
     sender_email = app.config['BREVO_SENDER_EMAIL']
     sender_name = app.config['BREVO_SENDER_NAME']
     url = 'https://api.brevo.com/v3/smtp/email'
@@ -256,7 +256,7 @@ def send_welcome_email(user):
 
 def send_password_reset_email(user, reset_token):
     """Send password reset email using Brevo API"""
-    api_key = app.config['BREVO_API_KEY']
+    api_key = app.config['KEYY']
     sender_email = app.config['BREVO_SENDER_EMAIL']
     sender_name = app.config['BREVO_SENDER_NAME']
     url = 'https://api.brevo.com/v3/smtp/email'
@@ -440,7 +440,7 @@ def send_password_reset_email(user, reset_token):
 
 def send_password_change_alert(user):
     """Send password change confirmation email using Brevo API"""
-    api_key = app.config['BREVO_API_KEY']
+    api_key = app.config['KEYY']
     sender_email = app.config['BREVO_SENDER_EMAIL']
     sender_name = app.config['BREVO_SENDER_NAME']
     url = 'https://api.brevo.com/v3/smtp/email'
@@ -1067,7 +1067,7 @@ def api_search_products():
 
 def test_brevo_api():
     """Test Brevo API connection"""
-    api_key = app.config['BREVO_API_KEY']
+    api_key = app.config['KEYY']
     sender_email = app.config['BREVO_SENDER_EMAIL']
     sender_name = app.config['BREVO_SENDER_NAME']
     url = 'https://api.brevo.com/v3/smtp/email'

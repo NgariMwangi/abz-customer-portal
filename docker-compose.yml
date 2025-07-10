@@ -1,9 +1,11 @@
 version: '3'
+
 services:
-    web:
-        build: .
-        # env_file: .env
-        container_name: abz-customer-portal
-        restart: always
-        ports:
-            - 5034:80
+  web:
+    build: .
+    env_file:
+      - .env
+    container_name: abz-customer-portal
+    restart: always
+    ports:
+      - "5034:80"
